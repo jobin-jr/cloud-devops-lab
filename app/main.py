@@ -6,40 +6,81 @@ import platform
 
 from dashboard import DASHBOARD_HTML
 
-app = FastAPI(title="InPrac Cloud Edge Gateway", version="1.2.0")
+app = FastAPI(title="InPrac Cloud Edge Gateway", version="1.2.1")
 
 START_TIME = time.time()
+REQUEST_COUNTER = 0
 
 @app.get("/")
 def read_root(request: Request):
     """
-    Intelligent Edge Route:
+    Intelligent & Cache-Safe Edge Route:
     - Renders the Cyber DevOps Mission Control Dashboard for web browsers.
-    - Returns structured JSON for automated APIs, curl, and microservices.
+    - Honors explicit application/json requests even from browsers or test tools.
+    - Emits Cache-Control: no-store and Vary: Accept to prevent proxy cache variant confusion.
     """
-    accept_header = request.headers.get("accept", "").lower()
+    global REQUEST_COUNTER
+    REQUEST_COUNTER += 1
+
+    accept = request.headers.get("accept", "").lower()
+    sec_fetch_dest = request.headers.get("sec-fetch-dest", "").lower()
     user_agent = request.headers.get("user-agent", "").lower()
 
-    # If accessed by a web browser or specifically requesting HTML
-    if "text/html" in accept_header or "mozilla" in user_agent:
-        return HTMLResponse(content=DASHBOARD_HTML, status_code=200)
+    # Rule 1: If client explicitly requests application/json, always return JSON
+    if "application/json" in accept and "text/html" not in accept:
+        return JSONResponse(
+            content={
+                "status": "online",
+                "service": "InPrac Cloud Edge Gateway",
+                "environment": os.getenv("APP_ENV", "production"),
+                "uptime_seconds": round(time.time() - START_TIME, 2),
+                "requests_served": REQUEST_COUNTER,
+                "message": "Welcome to the containerized microservice stack."
+            },
+            headers={"Cache-Control": "no-store, must-revalidate", "Vary": "Accept"}
+        )
 
-    # Standard JSON telemetry payload
+    # Rule 2: If browser navigation document or text/html is requested, return Dashboard
+    if "text/html" in accept or sec_fetch_dest == "document" or ("mozilla" in user_agent and "application/json" not in accept):
+        return HTMLResponse(
+            content=DASHBOARD_HTML,
+            status_code=200,
+            headers={"Cache-Control": "no-store, must-revalidate", "Vary": "Accept"}
+        )
+
+    # Rule 3: Default fallback for curl / scripts / automated scrapers
     return JSONResponse(
         content={
             "status": "online",
             "service": "InPrac Cloud Edge Gateway",
             "environment": os.getenv("APP_ENV", "production"),
             "uptime_seconds": round(time.time() - START_TIME, 2),
+            "requests_served": REQUEST_COUNTER,
             "message": "Welcome to the containerized microservice stack."
         },
-        status_code=200
+        headers={"Cache-Control": "no-store, must-revalidate", "Vary": "Accept"}
     )
+
+@app.get("/api/v1/status")
+def get_status():
+    """Deterministic JSON status endpoint for monitoring and automation."""
+    global REQUEST_COUNTER
+    return {
+        "status": "online",
+        "service": "InPrac Cloud Edge Gateway",
+        "environment": os.getenv("APP_ENV", "production"),
+        "uptime_seconds": round(time.time() - START_TIME, 2),
+        "requests_served": REQUEST_COUNTER
+    }
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def get_dashboard():
-    """Dedicated direct URL for the Cyber DevOps Mission Control Dashboard."""
-    return HTMLResponse(content=DASHBOARD_HTML, status_code=200)
+    """Deterministic HTML-only URL for the Mission Control Dashboard."""
+    return HTMLResponse(
+        content=DASHBOARD_HTML,
+        status_code=200,
+        headers={"Cache-Control": "no-cache"}
+    )
 
 @app.get("/health")
 def health_check():
@@ -56,10 +97,12 @@ def health_check():
 
 @app.get("/api/v1/metrics")
 def get_metrics():
-    """Simulated production telemetry endpoint."""
+    """Production telemetry endpoint with transparent telemetry attribution."""
+    global REQUEST_COUNTER
     return {
+        "source": "simulated_cluster_telemetry",
         "active_connections": 42,
         "memory_status": "optimal",
         "database_health": "connected",
-        "requests_processed": 1024
+        "requests_processed": 1024 + REQUEST_COUNTER
     }
