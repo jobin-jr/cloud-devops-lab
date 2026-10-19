@@ -1,22 +1,32 @@
-version: '3.8'
-
 services:
   # Edge Gateway / Nginx Reverse Proxy
   reverse-proxy:
     image: nginx:1.25-alpine
     container_name: inprac_reverse_proxy
     restart: unless-stopped
+    security_opt:
+      - "no-new-privileges:true"
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     depends_on:
       api:
         condition: service_healthy
     networks:
-      - internal-net
+      - edge-net
 
   # Core API Microservice
   api:
@@ -25,6 +35,8 @@ services:
       dockerfile: Dockerfile
     container_name: inprac_api_service
     restart: unless-stopped
+    security_opt:
+      - "no-new-privileges:true"
     environment:
       - APP_ENV=production
       - REDIS_HOST=cache
@@ -33,6 +45,11 @@ services:
         limits:
           cpus: '0.50'
           memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
       interval: 15s
@@ -40,14 +57,17 @@ services:
       retries: 3
       start_period: 5s
     networks:
-      - internal-net
+      - edge-net
+      - data-net
 
-  # In-Memory Cache (Redis) - Completely isolated from public internet
+  # In-Memory Cache (Redis) - Completely isolated in data-net
   cache:
     image: redis:7.2-alpine
     container_name: inprac_cache
     restart: unless-stopped
-    command: redis-server --appendonly yes
+    security_opt:
+      - "no-new-privileges:true"
+    command: redis-server --appendonly yes --maxmemory 96mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
     deploy:
@@ -55,12 +75,22 @@ services:
         limits:
           cpus: '0.25'
           memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
-      - internal-net
+      - data-net
 
 networks:
-  internal-net:
+  # Edge network: Nginx to API
+  edge-net:
     driver: bridge
+  # Internal data network: API to Redis only (isolated from Nginx & outside world)
+  data-net:
+    driver: bridge
+    internal: true
 
 volumes:
   redis_data:
