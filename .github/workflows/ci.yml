@@ -62,6 +62,7 @@ jobs:
             "docs/runbooks/cgroup-oom-mitigation.md"
             "docs/runbooks/backup-restoration-drill.md"
             "docs/runbooks/redis-data-recovery.md"
+            "docs/runbooks/minecraft-server-incident-response.md"
           )
           for runbook in "${REQUIRED_RUNBOOKS[@]}"; do
             if [ ! -f "$runbook" ]; then

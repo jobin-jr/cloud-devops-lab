@@ -14,6 +14,7 @@ This directory contains standardized, evidence-backed operational runbooks desig
 | **[`cgroup-oom-mitigation.md`](cgroup-oom-mitigation.md)** | Linux kernel cgroup memory exhaustion (`OOMKilled: true`), container thrashing, and memory leak triage. | 🟠 Medium/High Severity (Production Applicable) | RTO: < 8 Minutes |
 | **[`backup-restoration-drill.md`](backup-restoration-drill.md)** | Cold-start disaster recovery restoration drill into isolated staging with SHA256 cryptographic verification. | 🟢 Maintenance & Drill (Controlled Verification) | RTO: < 60 Seconds (Measured: 42s) |
 | **[`redis-data-recovery.md`](redis-data-recovery.md)** | Cache corruption, append-only file (AOF) recovery, and cache warming procedures. | 🟡 Low/Medium Severity (Controlled Lab Drill) | RTO: < 10 Minutes |
+| **[`minecraft-server-incident-response.md`](minecraft-server-incident-response.md)** | Minecraft (Paper 1.20+) & Velocity proxy routing drops, JVM heap vs cgroup OOM, low TPS/MSPT profiling, and Pterodactyl triage. | 🎮 Game Hosting & Infrastructure | RTO: < 8 Minutes |
 
 ---
 

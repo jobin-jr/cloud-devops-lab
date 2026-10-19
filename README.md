@@ -25,8 +25,21 @@ Designed for frontline systems administration, technical support operations, and
 | **[`docs/runbooks/cgroup-oom-mitigation.md`](docs/runbooks/cgroup-oom-mitigation.md)** | Linux kernel cgroup memory exhaustion (`OOMKilled: true`), container thrashing, and memory leak mitigation. | 🟠 Medium/High Severity (Resource Quotas) | RTO: < 8 Minutes |
 | **[`docs/runbooks/backup-restoration-drill.md`](docs/runbooks/backup-restoration-drill.md)** | Cold-start disaster recovery restoration drill into isolated staging with SHA256 cryptographic verification. | 🟢 Maintenance & Drill (Controlled Verification) | RTO: < 60s (Measured: 42.3s) |
 | **[`docs/runbooks/redis-data-recovery.md`](docs/runbooks/redis-data-recovery.md)** | Cache corruption, Multi-Part AOF journal repair (`redis-check-aof --fix`), and cache warming procedures. | 🟡 Low/Medium Severity (Data Integrity) | RTO: < 10 Minutes |
+| **[`docs/runbooks/minecraft-server-incident-response.md`](docs/runbooks/minecraft-server-incident-response.md)** | Minecraft (Paper 1.20+) & Velocity proxy drops, JVM heap vs cgroup OOM, low TPS/MSPT profiling, and Pterodactyl triage. | 🎮 Game Hosting & Infrastructure | RTO: < 8 Minutes |
 
 *Master Runbooks Index:* [`docs/runbooks/README.md`](docs/runbooks/README.md)
+
+---
+
+## ⚡ Hiring Manager: Review This Portfolio in 60 Seconds
+
+If you are evaluating this repository for a Technical Support, Linux SysAdmin, or Hosting Operations role, here is the fastest verification path:
+
+1. **Test Live System Status:** Open [`https://lab.euprac.xyz/api/v1/status`](https://lab.euprac.xyz/api/v1/status) (returns live production telemetry JSON).
+2. **Inspect Interactive Dashboard:** Open [`https://lab.euprac.xyz/dashboard`](https://lab.euprac.xyz/dashboard) (real-time telemetry and API console).
+3. **Audit Incident Recovery Rigor:** Read [`docs/runbooks/backup-restoration-drill.md`](docs/runbooks/backup-restoration-drill.md) (cryptographic SHA-256 verification and measured 42.3s recovery).
+4. **Audit Game Server Support Skills:** Read [`docs/runbooks/minecraft-server-incident-response.md`](docs/runbooks/minecraft-server-incident-response.md) (Velocity proxy drops, Aikar's JVM memory budget, and ticket de-escalation).
+5. **Verify Automated CI:** Check the [GitHub Actions CI Status](https://github.com/jobin-jr/cloud-devops-lab/actions/workflows/ci.yml) (passing tests for Compose syntax, Python code, and runbook manifests).
 
 ---
 
