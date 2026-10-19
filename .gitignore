@@ -1,0 +1,21 @@
+# Secrets & Environment
+.env
+*.env
+*.pem
+*.key
+
+# Backups & Data
+backups/
+*.tar.gz
+*.sha256
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# OS specific
+.DS_Store
+Thumbs.db
