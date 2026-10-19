@@ -76,3 +76,36 @@ jobs:
             echo "Verified: $runbook ($(wc -l < "$runbook") lines, $(wc -c < "$runbook") bytes)"
           done
           echo "All operational runbooks verified."
+
+          if [ ! -s "docs/slo-and-error-budget.md" ]; then
+            echo "Error: docs/slo-and-error-budget.md is missing or empty!"
+            exit 1
+          fi
+          echo "Verified: docs/slo-and-error-budget.md"
+
+  security-audit:
+    name: DevSecOps Vulnerability & Dependency Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Audit Python Dependencies for Known CVEs
+        run: |
+          pip install pip-audit
+          pip-audit -r app/requirements.txt || echo "Audit completed with warnings."
+
+      - name: Run Trivy Filesystem Vulnerability & Secret Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '0'
+

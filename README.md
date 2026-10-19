@@ -27,7 +27,7 @@ Designed for frontline systems administration, technical support operations, and
 | **[`docs/runbooks/redis-data-recovery.md`](docs/runbooks/redis-data-recovery.md)** | Cache corruption, Multi-Part AOF journal repair (`redis-check-aof --fix`), and cache warming procedures. | 🟡 Low/Medium Severity (Data Integrity) | RTO: < 10 Minutes |
 | **[`docs/runbooks/minecraft-server-incident-response.md`](docs/runbooks/minecraft-server-incident-response.md)** | Minecraft (Paper 1.20+) & Velocity proxy drops, JVM heap vs cgroup OOM, low TPS/MSPT profiling, and Pterodactyl triage. | 🎮 Game Hosting & Infrastructure | RTO: < 8 Minutes |
 
-*Master Runbooks Index:* [`docs/runbooks/README.md`](docs/runbooks/README.md)
+*Master Runbooks Index:* [`docs/runbooks/README.md`](docs/runbooks/README.md) • *Reliability & SLO Policy:* [`docs/slo-and-error-budget.md`](docs/slo-and-error-budget.md)
 
 ---
 

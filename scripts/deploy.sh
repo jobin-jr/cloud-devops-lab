@@ -37,8 +37,19 @@ done
 if [ $SUCCESS -eq 1 ]; then
     echo "=== [SUCCESS] Deployment is healthy and accepting traffic on port 80 ==="
     docker compose ps
+    if [ -n "${ALERT_WEBHOOK_URL:-}" ]; then
+        curl -s -X POST -H "Content-Type: application/json" \
+             -d '{"content":"✅ **InPrac Edge Gateway**: Production deployment healthy on lab.euprac.xyz"}' \
+             "${ALERT_WEBHOOK_URL}" > /dev/null || true
+    fi
 else
     echo "=== [FAILURE] Healthcheck failed. Rolling back services... ==="
     docker compose down
+    if [ -n "${ALERT_WEBHOOK_URL:-}" ]; then
+        curl -s -X POST -H "Content-Type: application/json" \
+             -d '{"content":"🚨 **InPrac Edge Gateway Alert**: Healthcheck failed! Automated rollback executed."}' \
+             "${ALERT_WEBHOOK_URL}" > /dev/null || true
+    fi
     exit 1
 fi
+
