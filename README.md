@@ -1,6 +1,14 @@
 # Containerized Edge Gateway & Microservice Stack
 
+[![Live Deployment](https://img.shields.io/badge/Live%20Production-https%3A%2F%2Flab.euprac.xyz-success?style=flat-square&logo=cloudflare)](https://lab.euprac.xyz)
+[![TLS Encrypted](https://img.shields.io/badge/Security-SSL%20TLS%20v1.3-blue?style=flat-square&logo=letsencrypt)](https://lab.euprac.xyz)
+[![Docker](https://img.shields.io/badge/Containers-Docker%20Compose-2496ED?style=flat-square&logo=docker)](https://github.com/jobin-jr/cloud-devops-lab)
+
 A production-grade, containerized infrastructure stack engineered for high-availability, automated deployment, and security hardening. Built with Docker Compose, Nginx, FastAPI, and Redis.
+
+**Live Production Edge:** [https://lab.euprac.xyz](https://lab.euprac.xyz)  
+* **Healthcheck:** `https://lab.euprac.xyz/health`
+* **Metrics API:** `https://lab.euprac.xyz/api/v1/metrics`
 
 ---
 
@@ -47,7 +55,7 @@ graph TD
 
 ### 1. Clone & Configure
 ```bash
-git clone https://github.com/your-username/cloud-devops-lab.git
+git clone https://github.com/jobin-jr/cloud-devops-lab.git
 cd cloud-devops-lab
 cp .env.example .env
 ```
