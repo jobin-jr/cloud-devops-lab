@@ -513,6 +513,79 @@ DASHBOARD_HTML = """<!DOCTYPE html>
             border: 1px solid rgba(16, 185, 129, 0.25);
         }
 
+        /* Incident Runbooks Grid & Cards */
+        .runbooks-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        @media (max-width: 640px) {
+            .runbooks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .runbook-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 16px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+        }
+        .runbook-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--emerald);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        .rb-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .rb-tag {
+            font-size: 0.65rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .rb-net { background: rgba(6, 182, 212, 0.15); color: var(--cyan); }
+        .rb-kernel { background: rgba(244, 63, 94, 0.15); color: var(--rose); }
+        .rb-sre { background: rgba(16, 185, 129, 0.15); color: var(--emerald); }
+        .rb-db { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
+        .rb-game { background: rgba(139, 92, 246, 0.15); color: var(--violet); }
+        .rb-slo { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .rb-code {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+        .rb-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+        .rb-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            margin-bottom: 12px;
+            flex-grow: 1;
+        }
+        .rb-footer {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--emerald);
+            font-weight: 600;
+        }
+
         /* Right Rail: SysAdmin & Profile Card */
         .right-rail {
             display: flex;
@@ -747,6 +820,7 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                     <button class="tab-btn active" onclick="switchTab('arch')">Architecture Flow</button>
                     <button class="tab-btn" onclick="switchTab('api')">Live API Console</button>
                     <button class="tab-btn" onclick="switchTab('security')">Kernel & Cgroups</button>
+                    <button class="tab-btn" onclick="switchTab('runbooks')">Incident Runbooks (SRE)</button>
                 </div>
 
                 <!-- Tab 1: Architecture Flow -->
@@ -879,6 +953,82 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Tab 4: Incident Runbooks (SRE) -->
+                <div id="tab-runbooks" class="tab-pane">
+                    <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: gap: 8px;">
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Production Troubleshooting & Root Cause Analysis Playbooks:</span>
+                        <span class="badge" style="color: var(--emerald); border-color: rgba(16, 185, 129, 0.3);">9.0/10 Verified</span>
+                    </div>
+                    
+                    <div class="runbooks-grid">
+                        <!-- Runbook 1 -->
+                        <a href="https://github.com/jobin-jr/cloud-devops-lab/blob/main/docs/runbooks/502-bad-gateway-rca.md" target="_blank" class="runbook-card">
+                            <div class="rb-header">
+                                <span class="rb-tag rb-net">NETWORK / PROXY</span>
+                                <span class="rb-code">502 BAD GATEWAY</span>
+                            </div>
+                            <div class="rb-title">Upstream Gateway Crash & Recovery</div>
+                            <div class="rb-desc">Diagnosing upstream container termination, curl --unix-socket bypass, 5-Whys RCA, and Zendesk customer resolution template.</div>
+                            <div class="rb-footer">RCA & Resolution • View Markdown ↗</div>
+                        </a>
+
+                        <!-- Runbook 2 -->
+                        <a href="https://github.com/jobin-jr/cloud-devops-lab/blob/main/docs/runbooks/cgroup-oom-mitigation.md" target="_blank" class="runbook-card">
+                            <div class="rb-header">
+                                <span class="rb-tag rb-kernel">LINUX KERNEL</span>
+                                <span class="rb-code">CGROUP OOM KILL</span>
+                            </div>
+                            <div class="rb-title">Kernel Memory Cgroup Triage</div>
+                            <div class="rb-desc">Inspecting memory.events, diagnosing dmesg oom-kill events, cgroup v2 memory budgeting, and non-disruptive mitigation.</div>
+                            <div class="rb-footer">Memory Profiling • View Markdown ↗</div>
+                        </a>
+
+                        <!-- Runbook 3 -->
+                        <a href="https://github.com/jobin-jr/cloud-devops-lab/blob/main/docs/runbooks/backup-restoration-drill.md" target="_blank" class="runbook-card">
+                            <div class="rb-header">
+                                <span class="rb-tag rb-sre">SRE / DR</span>
+                                <span class="rb-code">RTO: 42.3s VERIFIED</span>
+                            </div>
+                            <div class="rb-title">Disaster Recovery Cold-Start Drill</div>
+                            <div class="rb-desc">Real automated cold-start recovery drill into staging environment with SHA-256 cryptographic manifest verification.</div>
+                            <div class="rb-footer">Disaster Recovery • View Markdown ↗</div>
+                        </a>
+
+                        <!-- Runbook 4 -->
+                        <a href="https://github.com/jobin-jr/cloud-devops-lab/blob/main/docs/runbooks/redis-data-recovery.md" target="_blank" class="runbook-card">
+                            <div class="rb-header">
+                                <span class="rb-tag rb-db">DATABASE / CACHE</span>
+                                <span class="rb-code">REDIS 7 AOF</span>
+                            </div>
+                            <div class="rb-title">Multi-Part AOF Corruption Recovery</div>
+                            <div class="rb-desc">Forensic snapshot isolation, redis-check-aof --fix execution, point-in-time recovery, and cache warming procedures.</div>
+                            <div class="rb-footer">Data Forensics • View Markdown ↗</div>
+                        </a>
+
+                        <!-- Runbook 5 -->
+                        <a href="https://github.com/jobin-jr/cloud-devops-lab/blob/main/docs/runbooks/minecraft-server-incident-response.md" target="_blank" class="runbook-card">
+                            <div class="rb-header">
+                                <span class="rb-tag rb-game">GAMING / FLEET</span>
+                                <span class="rb-code">PAPER & VELOCITY</span>
+                            </div>
+                            <div class="rb-title">High-Concurrency Server Incident Response</div>
+                            <div class="rb-desc">Velocity proxy drops, Aikar's G1GC heap vs cgroup memory budgeting, spark MSPT profiler triage, and Pterodactyl daemon diagnostics.</div>
+                            <div class="rb-footer">Fleet Triage • View Markdown ↗</div>
+                        </a>
+
+                        <!-- Runbook 6 -->
+                        <a href="https://github.com/jobin-jr/cloud-devops-lab/blob/main/docs/slo-and-error-budget.md" target="_blank" class="runbook-card">
+                            <div class="rb-header">
+                                <span class="rb-tag rb-slo">SRE GOVERNANCE</span>
+                                <span class="rb-code">99.9% SLO</span>
+                            </div>
+                            <div class="rb-title">Service Level Objective & Error Budget</div>
+                            <div class="rb-desc">30-day rolling availability target (43.2 min monthly error budget), multi-window burn rate alerts (14.4x/6.0x/1.0x), and freeze policy.</div>
+                            <div class="rb-footer">Error Budgeting • View Markdown ↗</div>
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- Right Rail: Engineer Bio & Host Specs -->
@@ -899,15 +1049,20 @@ DASHBOARD_HTML = """<!DOCTYPE html>
                         <span class="skill-tag">Docker Compose</span>
                         <span class="skill-tag">Nginx Proxy</span>
                         <span class="skill-tag">Linux cgroups</span>
-                        <span class="skill-tag">Cloudflare DNS</span>
+                        <span class="skill-tag">SRE Runbooks</span>
+                        <span class="skill-tag">99.9% SLO</span>
+                        <span class="skill-tag">DevSecOps CI</span>
+                        <span class="skill-tag">Redis AOF</span>
                         <span class="skill-tag">FastAPI</span>
-                        <span class="skill-tag">Redis</span>
                     </div>
                     <div class="card-actions">
-                        <a href="https://github.com/jobin-jr/cloud-devops-lab" target="_blank" class="btn-primary">
-                            Explore Git Architecture & Code
+                        <button class="btn-primary" onclick="switchTab('runbooks')" style="cursor: pointer; border: none; font-family: inherit; font-size: inherit;">
+                            ⚡ Inspect Incident Runbooks (6 Playbooks)
+                        </button>
+                        <a href="https://github.com/jobin-jr/cloud-devops-lab" target="_blank" class="btn-link" style="justify-content: center;">
+                            Explore GitHub Repository & Code
                         </a>
-                        <a href="mailto:jobinxd04@gmail.com" class="btn-link" style="justify-content: center;">
+                        <a href="mailto:jobinxd04@gmail.com" class="btn-link" style="justify-content: center; opacity: 0.8;">
                             Contact Engineer (jobinxd04@gmail.com)
                         </a>
                     </div>
